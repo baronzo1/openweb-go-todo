@@ -1,0 +1,61 @@
+version: 2.1
+
+jobs:
+  build:
+    context: .
+    docker:
+      - image: docker:latest
+
+    steps:
+      # Check out the code
+      - checkout
+
+      # Build the app and database images
+      - run:
+          name: Build Docker images
+          command: docker-compose build
+
+      # Push the images to Docker Hub
+      - run:
+          name: Push images to Docker Hub
+          command: bash push-images-to-docker-hub.sh ${{ secrets.DOCKERHUB_USER }} ${{ secrets.DOCKERHUB_PASSWD }}
+
+  deploy:
+    context: ./helm/
+    docker:
+      - image: docker:latest
+
+    steps:
+      # Check out the code
+      - checkout
+
+      # Install Helm
+      - run:
+          name: Install Helm
+          command: |
+            apk add --update bash curl ca-certificates git
+            curl -LO https://git.io/get_helm.sh
+            chmod 700 get_helm.sh
+            ./get_helm.sh
+
+      # Deploy the app and database charts to Kubernetes
+      - run:
+          name: Deploy charts to Kubernetes
+          command: |
+            helm init --wait
+            helm upgrade --install app charts/app -f charts/app/values.yaml
+            helm upgrade --install db charts/db -f charts/db/values.yaml
+
+      # Add the hosts entry
+      - run:
+          name: Add hosts entry
+          command: bash add-hosts-entry.sh
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
