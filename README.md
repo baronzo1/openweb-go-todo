@@ -1,4 +1,4 @@
-##### This repository contains the files and script to deploy to 'todo' app to Kubernetes.
+##### This repository contains the files and scripts to deploy the 'todo' app to Kubernetes.
 
 ## Components:
 

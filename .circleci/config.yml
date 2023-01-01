@@ -2,7 +2,6 @@ version: 2.1
 
 jobs:
   build:
-    context: .
     docker:
       - image: docker:latest
 
@@ -21,7 +20,6 @@ jobs:
           command: bash push-images-to-docker-hub.sh ${{ secrets.DOCKERHUB_USER }} ${{ secrets.DOCKERHUB_PASSWD }}
 
   deploy:
-    context: ./helm/
     docker:
       - image: docker:latest
 
@@ -43,8 +41,8 @@ jobs:
           name: Deploy charts to Kubernetes
           command: |
             helm init --wait
-            helm upgrade --install app charts/app -f charts/app/values.yaml
-            helm upgrade --install db charts/db -f charts/db/values.yaml
+            helm upgrade -i go-todo-app ./helm/go-todo-app
+            helm upgrade -i go-todo-db ./helm/go-todo-db
 
       # Add the hosts entry
       - run:
