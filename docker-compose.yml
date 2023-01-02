@@ -10,13 +10,12 @@ services:
       - MYSQL_USER=root
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=todo
-    depends_on:
-      - mysql
+    links:
+      - go-todo-db
     ports:
       - 80:8080
     volumes:
       - .:/app
-    command: ["go", "run", "main.go"]
 
   go-todo-db:
     image: mysql:8.0
