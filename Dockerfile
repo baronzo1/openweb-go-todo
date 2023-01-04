@@ -1,13 +1,29 @@
-FROM golang:1.16-alpine
+# Start from the golang:1.16-alpine image
+FROM golang:1.16-alpine AS builder
 
-RUN apk update && apk add wget tar && apk add --update git
+# Set the working directory
+WORKDIR /app
 
-#RUN wget https://dl.google.com/go/go1.19.4.linux-amd64.tar.gz
+# Install the Git package
+RUN apk update && apk add git
 
-#RUN tar -C /usr/local -xzf go1.19.4.linux-amd64.tar.gz
+# Clone the repository
+RUN git clone https://github.com/ichtrojan/go-todo.git .
 
-RUN git clone https://github.com/ichtrojan/go-todo.git /app
-
+# Set the working directory to the app folder
 WORKDIR /app/go-todo
 
+# Install dependencies
 RUN go get -d -v ./...
+
+# Build the app
+RUN go build -o main .
+
+# Start from a small image
+FROM alpine:latest
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the binary from the builder image
+COPY --from=builder /app/go-todo/main .

@@ -1,7 +1,7 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: {{ include "go-todo-db.fullname" . }}
+  name: {{ template "fullname" . }}
   labels:
     {{- include "go-todo-db.labels" . | nindent 4 }}
 spec:

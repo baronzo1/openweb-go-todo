@@ -1,5 +1,9 @@
 version: 2.1
 
+environment:
+  DOCKERHUB_USER: "barongal"
+  DOCKERHUB_PASSWD: "temporaryp4ssw0rd"
+
 jobs:
   build:
     docker:
@@ -11,13 +15,13 @@ jobs:
 
       # Build the app and database images
       - run:
-          name: Build Docker images
-          command: docker-compose build
+          name: Build Docker image
+          command: docker build -t go-todo-app .
 
       # Push the images to Docker Hub
       - run:
-          name: Push images to Docker Hub
-          command: bash push-images-to-docker-hub.sh ${{ secrets.DOCKERHUB_USER }} ${{ secrets.DOCKERHUB_PASSWD }}
+          name: Push image to Docker Hub
+          command: bash push-images-to-docker-hub.sh $DOCKERHUB_USER $DOCKERHUB_PASSWD
 
   deploy:
     docker:

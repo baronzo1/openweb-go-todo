@@ -10,22 +10,22 @@ services:
       - MYSQL_USER=root
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=todo
-    links:
-      - go-todo-db
+    # links:
+    #   - go-todo-db
     ports:
       - 80:8080
     volumes:
       - .:/app
 
-  go-todo-db:
-    image: mysql:8.0
-    environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=todo
-    ports:
-      - 3306:3306
-    volumes:
-      - mysql-data:/var/lib/mysql
+#   go-todo-db:
+#     image: mysql:8.0
+#     environment:
+#       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+#       - MYSQL_DATABASE=todo
+#     ports:
+#       - 3306:3306
+#     volumes:
+#       - mysql-data:/var/lib/mysql
 
-volumes:
-  mysql-data:
+# volumes:
+#   mysql-data:
